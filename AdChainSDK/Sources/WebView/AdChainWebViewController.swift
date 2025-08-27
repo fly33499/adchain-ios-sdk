@@ -317,6 +317,8 @@ extension AdChainWebViewController: WKScriptMessageHandler {
                 handleGoForward()
             case "reload":
                 handleReload()
+            case "openExternalBrowser":
+                handleOpenExternalBrowser(data: data)
             default:
                 break
             }
@@ -470,6 +472,27 @@ extension AdChainWebViewController: WKScriptMessageHandler {
                 viewControllers[currentIndex] = newWebViewController
                 navController.setViewControllers(viewControllers, animated: true)
             }
+        }
+    }
+    
+    private func handleOpenExternalBrowser(data: [String: Any]?) {
+        guard let urlString = data?["url"] as? String,
+              let url = URL(string: urlString) else {
+            Logger.shared.log("Invalid URL for external browser: \(data?["url"] ?? "")", level: .error)
+            return
+        }
+        
+        // Check if URL can be opened
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:]) { success in
+                if success {
+                    Logger.shared.log("Successfully opened URL in external browser: \(urlString)", level: .debug)
+                } else {
+                    Logger.shared.log("Failed to open URL in external browser: \(urlString)", level: .error)
+                }
+            }
+        } else {
+            Logger.shared.log("Cannot open URL in external browser: \(urlString)", level: .error)
         }
     }
 }
