@@ -323,6 +323,23 @@ extension AdChainWebViewController: WKScriptMessageHandler {
         }
     }
     
+    // Helper function to convert various types to Bool
+    private func toBool(_ value: Any?) -> Bool {
+        if let boolValue = value as? Bool {
+            return boolValue
+        }
+        if let intValue = value as? Int {
+            return intValue != 0
+        }
+        if let doubleValue = value as? Double {
+            return doubleValue != 0
+        }
+        if let stringValue = value as? String {
+            return stringValue == "true" || stringValue == "1" || stringValue == "yes"
+        }
+        return false
+    }
+    
     private func provideDeviceInfo() {
         let deviceInfo = AdChainSDK.shared.analytics.getDeviceInfo()
         let deviceInfoDict: [String: Any] = [
@@ -350,8 +367,9 @@ extension AdChainWebViewController: WKScriptMessageHandler {
         guard let urlString = data?["url"] as? String else { return }
         
         // Default: hide navigation bar unless explicitly requested
-        let showNav = data?["showNavigationBar"] as? Bool ?? false
-        let modal = data?["modal"] as? Bool ?? true
+        // Handle both boolean and numeric values (0/1)
+        let showNav = toBool(data?["showNavigationBar"])
+        let modal = data?["modal"] != nil ? toBool(data?["modal"]) : true
         
         let config = WebViewConfig(
             url: urlString,
@@ -396,8 +414,9 @@ extension AdChainWebViewController: WKScriptMessageHandler {
         guard let urlString = data?["url"] as? String else { return }
         
         // Default: hide navigation bar unless explicitly requested
-        let showNav = data?["showNavigationBar"] as? Bool ?? false
-        let modal = data?["modal"] as? Bool ?? true
+        // Handle both boolean and numeric values (0/1)
+        let showNav = toBool(data?["showNavigationBar"])
+        let modal = data?["modal"] != nil ? toBool(data?["modal"]) : true
         
         let config = WebViewConfig(
             url: urlString,
