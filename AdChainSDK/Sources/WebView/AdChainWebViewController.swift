@@ -349,7 +349,7 @@ extension AdChainWebViewController: WKScriptMessageHandler {
     private func handleOpenWebView(data: [String: Any]?) {
         guard let urlString = data?["url"] as? String else { return }
         
-        // Create new WebView config
+        // Default: hide navigation bar unless explicitly requested
         let showNav = data?["showNavigationBar"] as? Bool ?? false
         let modal = data?["modal"] as? Bool ?? true
         
@@ -395,6 +395,7 @@ extension AdChainWebViewController: WKScriptMessageHandler {
     private func handleCloseAndOpenWebView(data: [String: Any]?) {
         guard let urlString = data?["url"] as? String else { return }
         
+        // Default: hide navigation bar unless explicitly requested
         let showNav = data?["showNavigationBar"] as? Bool ?? false
         let modal = data?["modal"] as? Bool ?? true
         
