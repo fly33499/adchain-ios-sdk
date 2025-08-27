@@ -6,7 +6,24 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(git tag:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(chmod:*)",
+      "Bash(./build_framework.sh:*)",
+      "Bash(./build_simple.sh:*)",
+      "Bash(find:*)",
+      "Bash(pod trunk:*)",
+      "Bash(swift package:*)",
+      "Bash(gh repo view:*)",
+      "Bash(curl:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(rm:*)",
+      "Bash(pod install:*)",
+      "Bash(swift build:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(pod lib lint:*)"
     ],
     "deny": []
   }

@@ -17,6 +17,11 @@ let package = Package(
             name: "AdChainSDK",
             dependencies: [],
             path: "Sources"
+        ),
+        .testTarget(
+            name: "AdChainSDKTests",
+            dependencies: ["AdChainSDK"],
+            path: "Tests"
         )
     ]
 )

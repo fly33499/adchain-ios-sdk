@@ -8,6 +8,7 @@ internal class AdChainSDKImpl: AdChainSDKProtocol {
     private var _isInitialized = false
     private let sessionId = UUID().uuidString
     private var userId: String?
+    private var webOfferwallUrl: String?
     
     private var apiClient: ApiClient?
     private var sessionManager: SessionManager?
@@ -62,9 +63,15 @@ internal class AdChainSDKImpl: AdChainSDKProtocol {
             self.apiClient?.validateCredentials(appId: config.appId, appSecret: config.appSecret) { result in
                 DispatchQueue.main.async {
                     switch result {
-                    case .success:
+                    case .success(let response):
                         self._isInitialized = true
                         self.sessionManager?.startSession(sessionId: self.sessionId)
+                        
+                        // Store webOfferwallUrl from server
+                        if let webOfferwallUrl = response.app?.webOfferwallUrl {
+                            self.webOfferwallUrl = webOfferwallUrl
+                            Logger.shared.log("WebOfferwall URL set: \(webOfferwallUrl)", level: .debug)
+                        }
                         
                         Logger.shared.log("SDK initialized successfully", level: .debug)
                         completion?(.success(()))
@@ -122,6 +129,10 @@ internal class AdChainSDKImpl: AdChainSDKProtocol {
     internal func getDeviceInfoCollector() -> DeviceInfoCollector {
         checkInitialized()
         return deviceInfoCollector!
+    }
+    
+    internal func getWebOfferwallUrl() -> String? {
+        return webOfferwallUrl
     }
     
     private func checkInitialized() {

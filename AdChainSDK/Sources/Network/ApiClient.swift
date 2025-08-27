@@ -21,14 +21,14 @@ internal class ApiClient {
         self.session = URLSession(configuration: configuration)
     }
     
-    func validateCredentials(appId: String, appSecret: String, completion: @escaping (Result<Void, AdChainError>) -> Void) {
+    func validateCredentials(appId: String, appSecret: String, completion: @escaping (Result<ValidateResponse, AdChainError>) -> Void) {
         let endpoint = "/v1/sdk/validate"
         let body = ["app_id": appId, "app_secret": appSecret]
         
-        post(endpoint: endpoint, body: body) { (result: Result<EmptyResponse, AdChainError>) in
+        post(endpoint: endpoint, body: body) { (result: Result<ValidateResponse, AdChainError>) in
             switch result {
-            case .success:
-                completion(.success(()))
+            case .success(let response):
+                completion(.success(response))
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -75,7 +75,7 @@ internal class ApiClient {
         parameters: [String: String] = [:],
         completion: @escaping (Result<T, AdChainError>) -> Void
     ) {
-        var components = URLComponents(string: "\(config.environment.baseUrl)\(endpoint)")!
+        var components = URLComponents(string: "\(config.actualBaseUrl)\(endpoint)")!
         components.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
         
         guard let url = components.url else {
@@ -93,7 +93,7 @@ internal class ApiClient {
         body: U,
         completion: @escaping (Result<T, AdChainError>) -> Void
     ) {
-        guard let url = URL(string: "\(config.environment.baseUrl)\(endpoint)") else {
+        guard let url = URL(string: "\(config.actualBaseUrl)\(endpoint)") else {
             completion(.failure(.invalidConfig(message: "Invalid URL")))
             return
         }
@@ -161,6 +161,18 @@ internal class ApiClient {
 // MARK: - Response Models
 
 internal struct EmptyResponse: Decodable {}
+
+internal struct ValidateResponse: Decodable {
+    let success: Bool
+    let app: AppInfo?
+    
+    struct AppInfo: Decodable {
+        let id: String
+        let name: String
+        let isActive: Bool
+        let webOfferwallUrl: String?
+    }
+}
 
 internal struct CarouselAdsResponse: Decodable {
     let ads: [CarouselAdResponse]

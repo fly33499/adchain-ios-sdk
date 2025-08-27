@@ -11,7 +11,7 @@ Pod::Spec.new do |spec|
   spec.author       = { "AdChain" => "sdk@adchain.com" }
   spec.platform     = :ios, "13.0"
   spec.source       = { :git => "https://github.com/fly33499/adchain-ios-sdk.git", :tag => "#{spec.version}" }
-  spec.source_files = "AdChainSDK/Sources/**/*.{swift}"
+  spec.source_files = "Sources/**/*.{swift}"
   spec.swift_version = "5.0"
   spec.frameworks   = "UIKit", "WebKit", "AdSupport", "AppTrackingTransparency"
   spec.weak_frameworks = "AppTrackingTransparency"

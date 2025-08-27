@@ -40,12 +40,16 @@ internal class AdChainWebViewController: UIViewController {
         
         // Navigation bar
         if config.showNavigationBar {
-            navigationItem.title = "AdChain"
-            navigationItem.leftBarButtonItem = UIBarButtonItem(
-                barButtonSystemItem: .close,
+            navigationItem.title = "애드체인"
+            
+            // Create back button with < symbol
+            let backButton = UIBarButtonItem(
+                image: UIImage(systemName: "chevron.left"),
+                style: .plain,
                 target: self,
                 action: #selector(closeButtonTapped)
             )
+            navigationItem.leftBarButtonItem = backButton
         }
         
         // WebView configuration
@@ -54,9 +58,21 @@ internal class AdChainWebViewController: UIViewController {
         configuration.preferences.javaScriptEnabled = config.enableJavaScript
         configuration.websiteDataStore = WKWebsiteDataStore.default()
         
-        if config.enableDomStorage {
-            configuration.preferences.setValue(true, forKey: "domStorageEnabled")
+        // Allow arbitrary loads for WebView (iOS 14+)
+        if #available(iOS 14.5, *) {
+            configuration.preferences.javaScriptCanOpenWindowsAutomatically = true
         }
+        
+        // Allow file access from file URLs
+        configuration.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
+        
+        // Allow insecure content
+        if #available(iOS 9.0, *) {
+            configuration.allowsInlineMediaPlayback = true
+        }
+        
+        // Note: DOM Storage is enabled by default in WKWebView
+        // The enableDomStorage config is kept for compatibility but doesn't need explicit setting
         
         // User content controller for JS bridge
         let userContentController = WKUserContentController()
@@ -182,12 +198,27 @@ extension AdChainWebViewController: WKNavigationDelegate {
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        navigationItem.title = webView.title ?? "AdChain"
+        navigationItem.title = webView.title ?? "애드체인"
         delegate?.webViewDidFinishLoading(url: webView.url?.absoluteString ?? "")
     }
     
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        Logger.shared.log("WebView navigation failed: \(error)", level: .error)
         let adChainError = AdChainError.webViewError(message: error.localizedDescription)
+        delegate?.webView(didFailWithError: adChainError)
+    }
+    
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        Logger.shared.log("WebView provisional navigation failed: \(error)", level: .error)
+        let nsError = error as NSError
+        Logger.shared.log("Error domain: \(nsError.domain), code: \(nsError.code)", level: .error)
+        
+        // Handle ATS error specifically
+        if nsError.domain == NSURLErrorDomain && nsError.code == -1022 {
+            Logger.shared.log("App Transport Security blocked HTTP load. Please check Info.plist settings.", level: .error)
+        }
+        
+        let adChainError = AdChainError.webViewError(message: "Failed to load: \(error.localizedDescription)")
         delegate?.webView(didFailWithError: adChainError)
     }
     
@@ -276,6 +307,14 @@ extension AdChainWebViewController: WKScriptMessageHandler {
                 closeButtonTapped()
             case "getDeviceInfo":
                 provideDeviceInfo()
+            case "openWebView":
+                handleOpenWebView(data: data)
+            case "goBack":
+                handleGoBack()
+            case "goForward":
+                handleGoForward()
+            case "reload":
+                handleReload()
             default:
                 break
             }
@@ -303,5 +342,51 @@ extension AdChainWebViewController: WKScriptMessageHandler {
             let script = "window.postMessage({type: 'deviceInfo', data: \(jsonString)}, '*')"
             webView.evaluateJavaScript(script)
         }
+    }
+    
+    private func handleOpenWebView(data: [String: Any]?) {
+        guard let urlString = data?["url"] as? String else { return }
+        
+        // Create new WebView config
+        let showNav = data?["showNavigationBar"] as? Bool ?? false
+        let modal = data?["modal"] as? Bool ?? true
+        
+        let config = WebViewConfig(
+            url: urlString,
+            showNavigationBar: showNav,
+            enableJavaScript: true,
+            enableDomStorage: true
+        )
+        
+        // Create new WebView controller
+        let newWebViewController = AdChainWebViewController(
+            url: urlString,
+            config: config,
+            delegate: nil
+        )
+        
+        if modal {
+            let navController = UINavigationController(rootViewController: newWebViewController)
+            navController.modalPresentationStyle = .fullScreen
+            present(navController, animated: true)
+        } else {
+            navigationController?.pushViewController(newWebViewController, animated: true)
+        }
+    }
+    
+    private func handleGoBack() {
+        if webView.canGoBack {
+            webView.goBack()
+        }
+    }
+    
+    private func handleGoForward() {
+        if webView.canGoForward {
+            webView.goForward()
+        }
+    }
+    
+    private func handleReload() {
+        webView.reload()
     }
 }

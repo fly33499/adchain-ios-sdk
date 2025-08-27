@@ -23,7 +23,7 @@ public struct WebViewConfig {
     
     public init(
         url: String? = nil,
-        showNavigationBar: Bool = true,
+        showNavigationBar: Bool = false,
         enableJavaScript: Bool = true,
         enableDomStorage: Bool = true,
         userAgentSuffix: String? = nil,

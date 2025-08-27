@@ -34,7 +34,8 @@ internal class AdChainWebViewImpl: AdChainWebViewProtocol {
     }
     
     private func buildUrl(config: WebViewConfig) -> String {
-        let baseUrl = config.url ?? "\(sdk.getConfig().environment.baseUrl)/web/hub"
+        // Use webOfferwallUrl from server if available, otherwise fall back to default hub URL
+        let baseUrl = config.url ?? sdk.getWebOfferwallUrl() ?? "\(sdk.getConfig().actualBaseUrl)/web/hub"
         
         guard var components = URLComponents(string: baseUrl) else {
             return baseUrl
