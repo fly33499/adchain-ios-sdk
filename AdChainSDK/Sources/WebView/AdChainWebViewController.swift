@@ -386,9 +386,15 @@ extension AdChainWebViewController: WKScriptMessageHandler {
         )
         
         if modal {
-            let navController = UINavigationController(rootViewController: newWebViewController)
-            navController.modalPresentationStyle = .fullScreen
-            present(navController, animated: true)
+            // Only wrap in navigation controller if navigation bar should be shown
+            if showNav {
+                let navController = UINavigationController(rootViewController: newWebViewController)
+                navController.modalPresentationStyle = .fullScreen
+                present(navController, animated: true)
+            } else {
+                newWebViewController.modalPresentationStyle = .fullScreen
+                present(newWebViewController, animated: true)
+            }
         } else {
             navigationController?.pushViewController(newWebViewController, animated: true)
         }
@@ -439,9 +445,15 @@ extension AdChainWebViewController: WKScriptMessageHandler {
                 guard let presentingVC = presentingVC else { return }
                 
                 if modal {
-                    let navController = UINavigationController(rootViewController: newWebViewController)
-                    navController.modalPresentationStyle = .fullScreen
-                    presentingVC.present(navController, animated: true)
+                    // Only wrap in navigation controller if navigation bar should be shown
+                    if showNav {
+                        let navController = UINavigationController(rootViewController: newWebViewController)
+                        navController.modalPresentationStyle = .fullScreen
+                        presentingVC.present(navController, animated: true)
+                    } else {
+                        newWebViewController.modalPresentationStyle = .fullScreen
+                        presentingVC.present(newWebViewController, animated: true)
+                    }
                 } else {
                     if let navController = presentingVC as? UINavigationController {
                         navController.pushViewController(newWebViewController, animated: true)
