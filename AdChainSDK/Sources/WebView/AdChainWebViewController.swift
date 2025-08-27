@@ -309,6 +309,8 @@ extension AdChainWebViewController: WKScriptMessageHandler {
                 provideDeviceInfo()
             case "openWebView":
                 handleOpenWebView(data: data)
+            case "closeOpenWebView":
+                handleCloseAndOpenWebView(data: data)
             case "goBack":
                 handleGoBack()
             case "goForward":
@@ -388,5 +390,54 @@ extension AdChainWebViewController: WKScriptMessageHandler {
     
     private func handleReload() {
         webView.reload()
+    }
+    
+    private func handleCloseAndOpenWebView(data: [String: Any]?) {
+        guard let urlString = data?["url"] as? String else { return }
+        
+        let showNav = data?["showNavigationBar"] as? Bool ?? false
+        let modal = data?["modal"] as? Bool ?? true
+        
+        let config = WebViewConfig(
+            url: urlString,
+            showNavigationBar: showNav,
+            enableJavaScript: true,
+            enableDomStorage: true
+        )
+        
+        // Create new WebView controller
+        let newWebViewController = AdChainWebViewController(
+            url: urlString,
+            config: config,
+            delegate: self.delegate
+        )
+        
+        // Close current and open new
+        if let presentingVC = self.presentingViewController {
+            // If presented modally
+            dismiss(animated: true) { [weak presentingVC] in
+                guard let presentingVC = presentingVC else { return }
+                
+                if modal {
+                    let navController = UINavigationController(rootViewController: newWebViewController)
+                    navController.modalPresentationStyle = .fullScreen
+                    presentingVC.present(navController, animated: true)
+                } else {
+                    if let navController = presentingVC as? UINavigationController {
+                        navController.pushViewController(newWebViewController, animated: true)
+                    } else if let tabBarController = presentingVC as? UITabBarController,
+                              let navController = tabBarController.selectedViewController as? UINavigationController {
+                        navController.pushViewController(newWebViewController, animated: true)
+                    }
+                }
+            }
+        } else if let navController = self.navigationController {
+            // If in navigation stack
+            var viewControllers = navController.viewControllers
+            if let currentIndex = viewControllers.firstIndex(of: self) {
+                viewControllers[currentIndex] = newWebViewController
+                navController.setViewControllers(viewControllers, animated: true)
+            }
+        }
     }
 }
