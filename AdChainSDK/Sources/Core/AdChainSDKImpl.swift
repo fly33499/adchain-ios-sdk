@@ -36,6 +36,11 @@ internal class AdChainSDKImpl: AdChainSDKProtocol {
         return AdChainPrivacyImpl()
     }()
     
+    lazy var nativeAdLoader: NativeAdLoader = {
+        checkInitialized()
+        return NativeAdLoader(apiClient: apiClient!)
+    }()
+    
     internal init() {
         setupAppLifecycleObservers()
     }

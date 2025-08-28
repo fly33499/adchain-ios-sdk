@@ -20,6 +20,7 @@ public protocol AdChainSDKProtocol {
     var webView: AdChainWebViewProtocol { get }
     var analytics: AdChainAnalyticsProtocol { get }
     var privacy: AdChainPrivacyProtocol { get }
+    var nativeAdLoader: NativeAdLoader { get }
 }
 
 public class AdChainSDK: AdChainSDKProtocol {
@@ -65,5 +66,9 @@ public class AdChainSDK: AdChainSDKProtocol {
     
     public var privacy: AdChainPrivacyProtocol {
         return AdChainSDK.shared.privacy
+    }
+    
+    public var nativeAdLoader: NativeAdLoader {
+        return AdChainSDK.shared.nativeAdLoader
     }
 }
