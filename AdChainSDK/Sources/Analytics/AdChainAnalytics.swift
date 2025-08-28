@@ -18,4 +18,5 @@ public struct DeviceInfo {
     public let language: String
     public let country: String
     public let timezone: String
+    public let localIp: String?  // 로컬 IP (선택적, 서버에서 외부 IP 자동 감지)
 }

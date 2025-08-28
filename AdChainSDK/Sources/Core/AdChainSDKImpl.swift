@@ -64,8 +64,12 @@ internal class AdChainSDKImpl: AdChainSDKProtocol {
             self.sessionManager = SessionManager()
             self.deviceInfoCollector = DeviceInfoCollector()
             
-            // Validate app credentials
-            self.apiClient?.validateCredentials(appId: config.appId, appSecret: config.appSecret) { result in
+            // Collect device info
+            let deviceInfo = self.deviceInfoCollector?.getDeviceInfo()
+            Logger.shared.log("Device info collected: \(String(describing: deviceInfo))", level: .debug)
+            
+            // Validate app credentials with device info
+            self.apiClient?.validateCredentials(appId: config.appId, appSecret: config.appSecret, deviceInfo: deviceInfo) { result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let response):

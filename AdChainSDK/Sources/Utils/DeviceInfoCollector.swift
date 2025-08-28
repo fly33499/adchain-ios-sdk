@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import AdSupport
 import AppTrackingTransparency
+import Darwin
 
 internal class DeviceInfoCollector {
     private var cachedDeviceInfo: DeviceInfo?
@@ -22,7 +23,8 @@ internal class DeviceInfoCollector {
             sdkVersion: "1.0.0",
             language: Locale.current.languageCode ?? "en",
             country: Locale.current.regionCode ?? "US",
-            timezone: TimeZone.current.identifier
+            timezone: TimeZone.current.identifier,
+            localIp: getLocalIpAddress()
         )
         
         cachedDeviceInfo = deviceInfo
@@ -108,6 +110,52 @@ internal class DeviceInfoCollector {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
         return "\(version) (\(build))"
+    }
+    
+    private func getLocalIpAddress() -> String? {
+        var address: String?
+        
+        // Get list of all interfaces on the local machine
+        var ifaddr: UnsafeMutablePointer<ifaddrs>?
+        guard getifaddrs(&ifaddr) == 0 else { return nil }
+        guard let firstAddr = ifaddr else { return nil }
+        
+        // For each interface
+        for ifptr in sequence(first: firstAddr, next: { $0.pointee.ifa_next }) {
+            let interface = ifptr.pointee
+            
+            // Check for IPv4 or IPv6 interface
+            let addrFamily = interface.ifa_addr.pointee.sa_family
+            if addrFamily == UInt8(AF_INET) || addrFamily == UInt8(AF_INET6) {
+                
+                // Check interface name
+                let name = String(cString: interface.ifa_name)
+                if name == "en0" || name == "en1" || name == "pdp_ip0" || name == "pdp_ip1" {
+                    
+                    // Convert interface address to a human readable string
+                    var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                    getnameinfo(interface.ifa_addr, socklen_t(interface.ifa_addr.pointee.sa_len),
+                                &hostname, socklen_t(hostname.count),
+                                nil, socklen_t(0), NI_NUMERICHOST)
+                    
+                    let addressString = String(cString: hostname)
+                    
+                    // Skip link-local addresses
+                    if !addressString.hasPrefix("fe80:") && !addressString.hasPrefix("169.254") {
+                        // Prefer IPv4 addresses
+                        if addrFamily == UInt8(AF_INET) {
+                            address = addressString
+                            break
+                        } else if address == nil {
+                            address = addressString
+                        }
+                    }
+                }
+            }
+        }
+        freeifaddrs(ifaddr)
+        
+        return address
     }
     
     func clearCache() {

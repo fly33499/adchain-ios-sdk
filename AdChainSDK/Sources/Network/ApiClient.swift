@@ -21,11 +21,55 @@ internal class ApiClient {
         self.session = URLSession(configuration: configuration)
     }
     
-    func validateCredentials(appId: String, appSecret: String, completion: @escaping (Result<ValidateResponse, AdChainError>) -> Void) {
+    func validateCredentials(appId: String, appSecret: String, deviceInfo: DeviceInfo? = nil, completion: @escaping (Result<ValidateResponse, AdChainError>) -> Void) {
         let endpoint = "/v1/sdk/validate"
-        let body = ["app_id": appId, "app_secret": appSecret]
         
-        post(endpoint: endpoint, body: body) { (result: Result<ValidateResponse, AdChainError>) in
+        // Create a proper Encodable structure
+        struct ValidateRequest: Encodable {
+            let app_id: String
+            let app_secret: String
+            let device_info: DeviceInfoDTO?
+            
+            struct DeviceInfoDTO: Encodable {
+                let deviceId: String
+                let advertisingId: String?
+                let isLimitAdTrackingEnabled: Bool
+                let os: String
+                let osVersion: String
+                let deviceModel: String
+                let appVersion: String
+                let sdkVersion: String
+                let language: String
+                let country: String
+                let timezone: String
+                let localIp: String?
+            }
+        }
+        
+        let deviceInfoDTO = deviceInfo.map { info in
+            ValidateRequest.DeviceInfoDTO(
+                deviceId: info.deviceId,
+                advertisingId: info.advertisingId,
+                isLimitAdTrackingEnabled: info.isAdvertisingTrackingEnabled,
+                os: info.os,
+                osVersion: info.osVersion,
+                deviceModel: info.deviceModel,
+                appVersion: info.appVersion,
+                sdkVersion: info.sdkVersion,
+                language: info.language,
+                country: info.country,
+                timezone: info.timezone,
+                localIp: info.localIp
+            )
+        }
+        
+        let requestBody = ValidateRequest(
+            app_id: appId,
+            app_secret: appSecret,
+            device_info: deviceInfoDTO
+        )
+        
+        post(endpoint: endpoint, body: requestBody) { (result: Result<ValidateResponse, AdChainError>) in
             switch result {
             case .success(let response):
                 completion(.success(response))
