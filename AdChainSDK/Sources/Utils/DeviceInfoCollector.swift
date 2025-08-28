@@ -48,12 +48,15 @@ internal class DeviceInfoCollector {
     private func getAdvertisingId() -> String? {
         if #available(iOS 14, *) {
             guard ATTrackingManager.trackingAuthorizationStatus == .authorized else {
+                // ATT 권한이 거부되거나 아직 요청하지 않은 경우 nil 반환
                 return nil
             }
         }
         
+        // LAT가 활성화되거나 시뮬레이터인 경우 zeroed IDFA를 그대로 반환
+        // 이를 통해 서버에서 권한 거부(nil)와 추적 제한(zeroed)을 구분 가능
         let idfa = ASIdentifierManager.shared().advertisingIdentifier.uuidString
-        return idfa != "00000000-0000-0000-0000-000000000000" ? idfa : nil
+        return idfa
     }
     
     private func isAdvertisingTrackingEnabled() -> Bool {
