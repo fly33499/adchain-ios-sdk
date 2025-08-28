@@ -26,11 +26,14 @@ internal class AdChainAnalyticsImpl: AdChainAnalyticsProtocol {
             sessionId: sessionManager.getSessionId() ?? "",
             userId: sessionManager.getUserId(),
             deviceId: deviceInfo.deviceId,
+            advertisingId: deviceInfo.advertisingId,
+            os: deviceInfo.os,
+            osVersion: deviceInfo.osVersion,
             parameters: parameters
         )
         
         apiClient.trackEvent(event)
-        Logger.shared.log("Event tracked: \(name)", level: .debug)
+        Logger.shared.log("Event tracked: \(name) with IDFA: \(deviceInfo.advertisingId ?? "none")", level: .debug)
     }
     
     func getDeviceInfo() -> DeviceInfo {

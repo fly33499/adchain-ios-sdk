@@ -217,6 +217,9 @@ internal struct AnalyticsEvent: Encodable {
     let sessionId: String
     let userId: String?
     let deviceId: String
+    let advertisingId: String?
+    let os: String
+    let osVersion: String
     let parameters: [String: Any]?
     
     enum CodingKeys: String, CodingKey {
@@ -225,6 +228,9 @@ internal struct AnalyticsEvent: Encodable {
         case sessionId = "session_id"
         case userId = "user_id"
         case deviceId = "device_id"
+        case advertisingId = "advertising_id"
+        case os
+        case osVersion = "os_version"
         case parameters
     }
     
@@ -235,6 +241,9 @@ internal struct AnalyticsEvent: Encodable {
         try container.encode(sessionId, forKey: .sessionId)
         try container.encodeIfPresent(userId, forKey: .userId)
         try container.encode(deviceId, forKey: .deviceId)
+        try container.encodeIfPresent(advertisingId, forKey: .advertisingId)
+        try container.encode(os, forKey: .os)
+        try container.encode(osVersion, forKey: .osVersion)
         
         if let parameters = parameters {
             let anyCodableParams = parameters.mapValues { AnyCodable($0) }
