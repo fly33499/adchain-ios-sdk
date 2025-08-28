@@ -91,9 +91,7 @@ class FeedCardCell: UICollectionViewCell, FeedAdCell {
         titleLabel.text = ad.title
         descriptionLabel.text = ad.description
         
-        if let ctaText = ad.ctaText {
-            ctaButton.setTitle(ctaText, for: .normal)
-        }
+        ctaButton.setTitle(ad.ctaText, for: .normal)
         
         if let url = URL(string: ad.imageUrl) {
             loadImage(from: url)

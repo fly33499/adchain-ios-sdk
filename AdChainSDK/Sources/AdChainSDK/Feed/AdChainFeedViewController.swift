@@ -179,7 +179,7 @@ public class AdChainFeedViewController: UIViewController {
                     self.loadingIndicator.stopAnimating()
                     self.refreshControl?.endRefreshing()
                     
-                    Logger.error("Failed to load ads: \(error)")
+                    Logger.shared.log("Failed to load ads: \(error)", level: .error)
                     
                     if self.ads.isEmpty {
                         self.emptyLabel.isHidden = false

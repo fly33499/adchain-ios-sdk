@@ -59,9 +59,9 @@ public class AdChainCollectionAdapter: NSObject {
                     self.distributeAds()
                 }
                 
-                AdChainLogger.log("Loaded \(response.ads.count) ads for collection")
+                Logger.shared.log("Loaded \(response.ads.count) ads for collection", level: .debug)
             } catch {
-                AdChainLogger.error("Failed to load ads: \(error)")
+                Logger.shared.log("Failed to load ads: \(error)", level: .error)
             }
         }
     }
@@ -129,7 +129,7 @@ public class AdChainCollectionAdapter: NSObject {
         guard !impressedAds.contains(ad.id) else { return }
         
         impressedAds.insert(ad.id)
-        adLoader.trackImpression(ad)
+        adLoader.trackImpression(ad: ad)
         onAdImpression?(ad, position)
     }
     
@@ -163,7 +163,7 @@ extension AdChainCollectionAdapter: UICollectionViewDataSource {
             if let ad = getAdAtPosition(indexPath) {
                 cell.configure(with: ad, viewBinder: collectionViewBinder, position: indexPath.item)
                 cell.onAdClick = { [weak self] ad in
-                    self?.adLoader.trackClick(ad)
+                    self?.adLoader.trackClick(ad: ad)
                     self?.onAdClick?(ad, indexPath.item)
                 }
                 trackImpression(ad, position: indexPath.item)
