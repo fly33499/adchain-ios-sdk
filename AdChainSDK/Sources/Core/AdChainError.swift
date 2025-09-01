@@ -2,12 +2,20 @@ import Foundation
 
 public enum AdChainError: Error {
     case initializationFailed(message: String)
-    case notInitialized
+    case notInitialized(message: String)
     case networkError(message: String, statusCode: Int?)
     case invalidConfig(message: String)
     case invalidUserId
-    case noFill
+    case noFill(message: String)
     case webViewError(message: String)
+    case loadInProgress(message: String)
+    case operationInProgress(message: String)
+    case notFound(message: String)
+    case invalidState(message: String)
+    case invalidParameter(message: String)
+    case limitExceeded(message: String)
+    case invalidUrl(url: String)
+    case invalidData(message: String)
     case unknown(message: String, underlyingError: Error?)
     
     public var errorCode: ErrorCode {
@@ -19,6 +27,14 @@ public enum AdChainError: Error {
         case .invalidUserId: return .invalidUserId
         case .noFill: return .noFill
         case .webViewError: return .webViewError
+        case .loadInProgress: return .unknown
+        case .operationInProgress: return .unknown
+        case .notFound: return .unknown
+        case .invalidState: return .unknown
+        case .invalidParameter: return .unknown
+        case .limitExceeded: return .unknown
+        case .invalidUrl: return .unknown
+        case .invalidData: return .unknown
         case .unknown: return .unknown
         }
     }
@@ -27,8 +43,8 @@ public enum AdChainError: Error {
         switch self {
         case .initializationFailed(let message):
             return "Initialization failed: \(message)"
-        case .notInitialized:
-            return "AdChainSDK is not initialized"
+        case .notInitialized(let message):
+            return message.isEmpty ? "AdChainSDK is not initialized" : message
         case .networkError(let message, let statusCode):
             if let statusCode = statusCode {
                 return "Network error (\(statusCode)): \(message)"
@@ -38,10 +54,26 @@ public enum AdChainError: Error {
             return "Invalid configuration: \(message)"
         case .invalidUserId:
             return "Invalid user ID"
-        case .noFill:
-            return "No ads available"
+        case .noFill(let message):
+            return message.isEmpty ? "No ads available" : message
         case .webViewError(let message):
             return "WebView error: \(message)"
+        case .loadInProgress(let message):
+            return "Load in progress: \(message)"
+        case .operationInProgress(let message):
+            return "Operation in progress: \(message)"
+        case .notFound(let message):
+            return "Not found: \(message)"
+        case .invalidState(let message):
+            return "Invalid state: \(message)"
+        case .invalidParameter(let message):
+            return "Invalid parameter: \(message)"
+        case .limitExceeded(let message):
+            return "Limit exceeded: \(message)"
+        case .invalidUrl(let url):
+            return "Invalid URL: \(url)"
+        case .invalidData(let message):
+            return "Invalid data: \(message)"
         case .unknown(let message, _):
             return "Unknown error: \(message)"
         }

@@ -1,74 +1,34 @@
 import Foundation
-import UIKit
 
-public protocol AdChainSDKProtocol {
-    static var shared: AdChainSDKProtocol { get }
+/// AdChainSDK - 버즈빌 SDK v6 호환 iOS SDK
+/// 
+/// 이 SDK는 AdchainBenefit을 통해 모든 기능에 접근합니다.
+/// 사용 예시:
+/// ```swift
+/// // 1. SDK 초기화
+/// let config = AdchainBenefitConfig.Builder(appId: "YOUR_APP_ID").build()
+/// AdchainBenefit.shared.initialize(with: config)
+/// 
+/// // 2. 사용자 로그인
+/// let user = AdchainBenefitUser.Builder(userId: "USER_ID").build()
+/// AdchainBenefit.shared.login(with: user, onSuccess: { }, onFailure: { _ in })
+/// 
+/// // 3. 네이티브 광고 사용
+/// let native = AdchainNative(unitId: "UNIT_ID")
+/// native.load(onSuccess: { ad in }, onFailure: { _ in })
+/// ```
+public final class AdChainSDK {
+    public static let version = "1.0.0"
     
-    func initialize(
-        config: AdChainConfig,
-        completion: ((Result<Void, AdChainError>) -> Void)?
-    )
+    /// SDK 버전 정보
+    public static func getVersion() -> String {
+        return version
+    }
     
-    func setUser(userId: String)
-    func logout()
-    
-    func isInitialized() -> Bool
-    func getVersion() -> String
-    func getSessionId() -> String
-    
-    var carousel: AdChainCarouselProtocol { get }
-    var webView: AdChainWebViewProtocol { get }
-    var analytics: AdChainAnalyticsProtocol { get }
-    var privacy: AdChainPrivacyProtocol { get }
-    var nativeAdLoader: NativeAdLoader { get }
-}
-
-public class AdChainSDK: AdChainSDKProtocol {
-    public static let shared: AdChainSDKProtocol = AdChainSDKImpl()
+    /// SDK 초기화 여부 확인
+    public static func isInitialized() -> Bool {
+        return AdchainBenefit.shared.isLoggedIn()
+    }
     
     private init() {}
-    
-    public func initialize(config: AdChainConfig, completion: ((Result<Void, AdChainError>) -> Void)?) {
-        (AdChainSDK.shared as? AdChainSDKImpl)?.initialize(config: config, completion: completion)
-    }
-    
-    public func setUser(userId: String) {
-        AdChainSDK.shared.setUser(userId: userId)
-    }
-    
-    public func logout() {
-        AdChainSDK.shared.logout()
-    }
-    
-    public func isInitialized() -> Bool {
-        return AdChainSDK.shared.isInitialized()
-    }
-    
-    public func getVersion() -> String {
-        return AdChainSDK.shared.getVersion()
-    }
-    
-    public func getSessionId() -> String {
-        return AdChainSDK.shared.getSessionId()
-    }
-    
-    public var carousel: AdChainCarouselProtocol {
-        return AdChainSDK.shared.carousel
-    }
-    
-    public var webView: AdChainWebViewProtocol {
-        return AdChainSDK.shared.webView
-    }
-    
-    public var analytics: AdChainAnalyticsProtocol {
-        return AdChainSDK.shared.analytics
-    }
-    
-    public var privacy: AdChainPrivacyProtocol {
-        return AdChainSDK.shared.privacy
-    }
-    
-    public var nativeAdLoader: NativeAdLoader {
-        return AdChainSDK.shared.nativeAdLoader
-    }
 }

@@ -3,7 +3,7 @@ import UIKit
 /// Protocol for customizing how carousel items are displayed
 public protocol CarouselViewBinder {
     func createView() -> UIView
-    func bindView(_ view: UIView, ad: NativeAdData, at position: Int)
+    func bindView(_ view: UIView, ad: AdchainNativeAd, at position: Int)
     func getViewType() -> Int
 }
 
@@ -21,7 +21,7 @@ public class DefaultCarouselViewBinder: CarouselViewBinder {
         return DefaultCarouselItemView()
     }
     
-    public func bindView(_ view: UIView, ad: NativeAdData, at position: Int) {
+    public func bindView(_ view: UIView, ad: AdchainNativeAd, at position: Int) {
         guard let itemView = view as? DefaultCarouselItemView else { return }
         itemView.configure(with: ad)
     }
@@ -135,7 +135,7 @@ private class DefaultCarouselItemView: UIView {
         ])
     }
     
-    func configure(with ad: NativeAdData) {
+    func configure(with ad: AdchainNativeAd) {
         titleLabel.text = ad.title
         descriptionLabel.text = ad.description
         ctaButton.setTitle(ad.ctaText, for: .normal)
@@ -173,7 +173,7 @@ public class SimpleListViewBinder: CarouselViewBinder {
         return SimpleListItemView()
     }
     
-    public func bindView(_ view: UIView, ad: NativeAdData, at position: Int) {
+    public func bindView(_ view: UIView, ad: AdchainNativeAd, at position: Int) {
         guard let itemView = view as? SimpleListItemView else { return }
         itemView.configure(with: ad)
     }
@@ -247,7 +247,7 @@ private class SimpleListItemView: UIView {
         ])
     }
     
-    func configure(with ad: NativeAdData) {
+    func configure(with ad: AdchainNativeAd) {
         titleLabel.text = ad.title
         descriptionLabel.text = ad.description
         

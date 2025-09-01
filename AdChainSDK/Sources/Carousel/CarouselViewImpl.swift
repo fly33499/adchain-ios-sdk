@@ -16,7 +16,7 @@ internal class CarouselViewImpl: UIView, CarouselView {
     private var impressionTracker = Set<String>()
     private var autoScrollTimer: Timer?
     
-    private let analytics = (AdChainSDK.shared as? AdChainSDKImpl)?.analytics as? AdChainAnalyticsImpl
+    private let analytics: AdChainAnalyticsImpl? = nil // 임시 - AdchainBenefit.shared 통해 접근 필요
     
     init(config: CarouselConfig, apiClient: ApiClient, delegate: CarouselDelegate?) {
         self.config = config

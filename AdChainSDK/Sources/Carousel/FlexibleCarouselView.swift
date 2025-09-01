@@ -6,7 +6,7 @@ public class FlexibleCarouselView: UIView {
     
     // Core components
     private var collectionView: UICollectionView!
-    private let adLoader = AdChainSDK.shared.nativeAdLoader
+    private var native: AdchainNative?
     
     // Configuration
     private var unitId: String = ""
@@ -16,13 +16,13 @@ public class FlexibleCarouselView: UIView {
     private var scrollInterval: TimeInterval = 3.0
     
     // State
-    private var ads: [NativeAdData] = []
+    private var ads: [AdchainNativeAd] = []
     private var isLoading = false
     private var autoScrollTimer: Timer?
     
     // Callbacks
-    public var onItemClick: ((NativeAdData, Int) -> Void)?
-    public var onLoadComplete: (([NativeAdData]) -> Void)?
+    public var onItemClick: ((AdchainNativeAd, Int) -> Void)?
+    public var onLoadComplete: (([AdchainNativeAd]) -> Void)?
     public var onLoadError: ((Error) -> Void)?
     
     public override init(frame: CGRect) {
@@ -90,33 +90,33 @@ public class FlexibleCarouselView: UIView {
         
         isLoading = true
         
-        Task {
-            do {
-                let request = NativeAdRequest(
-                    unitId: unitId,
-                    count: itemCount
-                )
+        // Initialize native if needed
+        if native == nil {
+            native = AdchainNative(unitId: unitId)
+        }
+        
+        // Load multiple ads using carousel API
+        AdchainBenefit.shared.getApiClient()?.fetchCarouselAds(unitId: unitId, count: itemCount) { [weak self] result in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                self.isLoading = false
                 
-                let response = try await adLoader.loadAds(request: request)
-                self.ads = response.ads
-                
-                await MainActor.run {
+                switch result {
+                case .success(let carouselAds):
+                    self.ads = carouselAds.map { AdchainNativeAd(from: $0) }
                     self.collectionView.reloadData()
-                    self.isLoading = false
-                    self.onLoadComplete?(response.ads)
+                    self.onLoadComplete?(self.ads)
                     
                     // Start auto-scroll if enabled
-                    if self.autoScroll && !response.ads.isEmpty {
+                    if self.autoScroll && !self.ads.isEmpty {
                         self.startAutoScroll()
                     }
                     
                     // Track initial impressions
                     self.trackVisibleItems()
-                }
-                
-            } catch {
-                await MainActor.run {
-                    self.isLoading = false
+                    
+                case .failure(let error):
                     Logger.shared.log("Failed to load ads: \(error)", level: .error)
                     self.onLoadError?(error)
                 }
@@ -133,7 +133,7 @@ public class FlexibleCarouselView: UIView {
     }
     
     /// Get current ads
-    public func getAds() -> [NativeAdData] {
+    public func getAds() -> [AdchainNativeAd] {
         return ads
     }
     
@@ -149,7 +149,7 @@ public class FlexibleCarouselView: UIView {
         for indexPath in visibleIndexPaths {
             if indexPath.item < ads.count {
                 let ad = ads[indexPath.item]
-                adLoader.trackImpression(ad: ad)
+                // Track impression - handled by native ad itself
             }
         }
     }
@@ -225,7 +225,7 @@ extension FlexibleCarouselView: UICollectionViewDelegate {
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let ad = ads[indexPath.item]
-        adLoader.trackClick(ad: ad)
+        // Track click - handled by native ad itself
         onItemClick?(ad, indexPath.item)
     }
     
@@ -266,7 +266,7 @@ private class FlexibleCarouselCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with ad: NativeAdData, viewBinder: CarouselViewBinder) {
+    func configure(with ad: AdchainNativeAd, viewBinder: CarouselViewBinder) {
         // Remove old custom view
         customView?.removeFromSuperview()
         

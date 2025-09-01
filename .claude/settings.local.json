@@ -23,7 +23,11 @@
       "Bash(pod install:*)",
       "Bash(swift build:*)",
       "Bash(xcodebuild:*)",
-      "Bash(pod lib lint:*)"
+      "Bash(pod lib lint:*)",
+      "Read(/Users/donghoon/Downloads/**)",
+      "Bash(tree:*)",
+      "Bash(grep:*)",
+      "Read(/Users/donghoon/Downloads/**)"
     ],
     "deny": []
   }

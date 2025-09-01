@@ -1,19 +1,19 @@
 import Foundation
 
 internal class ApiClient {
-    private let config: AdChainConfig
+    private let config: AdchainBenefitConfig
     private let session: URLSession
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
     
-    init(config: AdChainConfig) {
+    init(config: AdchainBenefitConfig) {
         self.config = config
         
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = config.apiTimeout
         configuration.httpAdditionalHeaders = [
             "X-AdChain-App-Id": config.appId,
-            "X-AdChain-App-Secret": config.appSecret,
+            "X-AdChain-App-Secret": config.appSecret ?? "",
             "X-AdChain-SDK-Version": "1.0.0",
             "X-AdChain-Platform": "iOS"
         ]

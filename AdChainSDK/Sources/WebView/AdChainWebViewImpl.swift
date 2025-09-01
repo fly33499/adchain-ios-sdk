@@ -1,10 +1,17 @@
 import UIKit
 
 internal class AdChainWebViewImpl: AdChainWebViewProtocol {
-    private let sdk: AdChainSDKImpl
     
-    init(sdk: AdChainSDKImpl) {
-        self.sdk = sdk
+    init() {
+    }
+    
+    private func getWebOfferwallUrl() -> String? {
+        // This would typically come from server configuration
+        return nil
+    }
+    
+    private func getConfig() -> AdchainBenefitConfig? {
+        return AdchainBenefit.shared.getConfig()
     }
     
     func presentWebView(
@@ -35,31 +42,31 @@ internal class AdChainWebViewImpl: AdChainWebViewProtocol {
     
     private func buildUrl(config: WebViewConfig) -> String {
         // Use webOfferwallUrl from server if available, otherwise fall back to default hub URL
-        let baseUrl = config.url ?? sdk.getWebOfferwallUrl() ?? "\(sdk.getConfig().actualBaseUrl)/web/hub"
+        let baseUrl = config.url ?? getWebOfferwallUrl() ?? "\(getConfig()?.actualBaseUrl ?? "")/web/hub"
         
         guard var components = URLComponents(string: baseUrl) else {
             return baseUrl
         }
         
-        let deviceInfo = sdk.getDeviceInfoCollector().getDeviceInfo()
+        let deviceInfo = AdchainBenefit.shared.deviceInfoCollector?.getDeviceInfo()
         
         var queryItems = components.queryItems ?? []
         
         // Add required parameters
         queryItems.append(contentsOf: [
-            URLQueryItem(name: "app_id", value: sdk.getConfig().appId),
-            URLQueryItem(name: "user_id", value: sdk.getUserId() ?? ""),
-            URLQueryItem(name: "session_id", value: sdk.getSessionId()),
-            URLQueryItem(name: "device_id", value: deviceInfo.deviceId),
-            URLQueryItem(name: "sdk_version", value: sdk.getVersion()),
+            URLQueryItem(name: "app_id", value: getConfig()?.appId ?? ""),
+            URLQueryItem(name: "user_id", value: AdchainBenefit.shared.getCurrentUser()?.userId ?? ""),
+            URLQueryItem(name: "session_id", value: AdchainBenefit.shared.getSessionId()),
+            URLQueryItem(name: "device_id", value: deviceInfo?.deviceId ?? ""),
+            URLQueryItem(name: "sdk_version", value: AdChainSDK.version),
             URLQueryItem(name: "platform", value: "ios")
         ])
         
         // Add optional parameters
-        if let advertisingId = deviceInfo.advertisingId {
+        if let advertisingId = deviceInfo?.advertisingId {
             queryItems.append(URLQueryItem(name: "idfa", value: advertisingId))
         }
-        queryItems.append(URLQueryItem(name: "lat", value: String(!deviceInfo.isAdvertisingTrackingEnabled)))
+        queryItems.append(URLQueryItem(name: "lat", value: String(!(deviceInfo?.isAdvertisingTrackingEnabled ?? false))))
         
         components.queryItems = queryItems
         

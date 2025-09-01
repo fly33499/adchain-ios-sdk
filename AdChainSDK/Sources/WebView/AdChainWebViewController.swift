@@ -148,7 +148,7 @@ internal class AdChainWebViewController: UIViewController {
         webView.load(request)
         
         // Track webview open
-        let analytics = (AdChainSDK.shared as? AdChainSDKImpl)?.analytics as? AdChainAnalyticsImpl
+        let analytics = AdchainBenefit.shared.analytics as? AdchainAnalyticsImpl
         analytics?.trackWebViewOpen(url: self.url)
     }
     
@@ -177,7 +177,7 @@ internal class AdChainWebViewController: UIViewController {
         if isBeingDismissed || isMovingFromParent {
             // Track close event
             let duration = Date().timeIntervalSince(startTime)
-            let analytics = (AdChainSDK.shared as? AdChainSDKImpl)?.analytics as? AdChainAnalyticsImpl
+            let analytics = AdchainBenefit.shared.analytics as? AdchainAnalyticsImpl
             analytics?.trackWebViewClose(url: url, duration: duration)
         }
     }
@@ -343,7 +343,20 @@ extension AdChainWebViewController: WKScriptMessageHandler {
     }
     
     private func provideDeviceInfo() {
-        let deviceInfo = AdChainSDK.shared.analytics.getDeviceInfo()
+        let deviceInfo = AdchainBenefit.shared.deviceInfoCollector?.getDeviceInfo() ?? DeviceInfo(
+            deviceId: "",
+            advertisingId: nil,
+            isAdvertisingTrackingEnabled: false,
+            os: "iOS",
+            osVersion: "",
+            deviceModel: "",
+            appVersion: "",
+            sdkVersion: "",
+            language: "",
+            country: "",
+            timezone: "",
+            localIp: nil
+        )
         let deviceInfoDict: [String: Any] = [
             "deviceId": deviceInfo.deviceId,
             "advertisingId": deviceInfo.advertisingId ?? "",

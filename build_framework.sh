@@ -24,7 +24,7 @@ xcodebuild archive \
     -sdk iphonesimulator \
     -destination "generic/platform=iOS Simulator" \
     SKIP_INSTALL=NO \
-    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+    BUILD_LIBRARY_FOR_DISTRIBUTION=NO \
     ONLY_ACTIVE_ARCH=NO
 
 # Build for iOS Device
@@ -35,7 +35,7 @@ xcodebuild archive \
     -sdk iphoneos \
     -destination "generic/platform=iOS" \
     SKIP_INSTALL=NO \
-    BUILD_LIBRARY_FOR_DISTRIBUTION=YES
+    BUILD_LIBRARY_FOR_DISTRIBUTION=NO
 
 cd ..
 
