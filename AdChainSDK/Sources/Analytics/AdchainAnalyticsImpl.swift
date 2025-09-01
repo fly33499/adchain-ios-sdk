@@ -1,6 +1,6 @@
 import Foundation
 
-internal class AdChainAnalyticsImpl: AdChainAnalyticsProtocol {
+internal class AdchainAnalyticsImpl: AdchainAnalyticsProtocol, AdchainAnalytics {
     private let apiClient: ApiClient
     private let deviceInfoCollector: DeviceInfoCollector
     private let sessionManager: SessionManager
@@ -16,6 +16,19 @@ internal class AdChainAnalyticsImpl: AdChainAnalyticsProtocol {
     func trackDAU() {
         trackEvent(name: "dau", parameters: nil)
         sessionManager.updateLastActiveTime()
+    }
+    
+    // AdchainAnalytics protocol methods
+    func trackEvent(_ event: String, parameters: [String: Any]?) {
+        trackEvent(name: event, parameters: parameters)
+    }
+    
+    func setUser(_ user: AdchainBenefitUser) {
+        sessionManager.setUserId(user.userId)
+    }
+    
+    func clearUser() {
+        sessionManager.clearUserId()
     }
     
     func trackEvent(name: String, parameters: [String: Any]?) {

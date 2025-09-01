@@ -1,12 +1,12 @@
 import XCTest
-@testable import AdChainSDK
+@testable import AdchainSDK
 
 final class LocalServerTests: XCTestCase {
     
     // MARK: - Properties
     
-    var sdk: AdChainSDK!
-    var config: AdChainConfig!
+    var sdk: AdchainSDK!
+    var config: AdchainConfig!
     let localServerURL = "http://localhost:3000"
     
     // MARK: - Setup
@@ -21,13 +21,13 @@ final class LocalServerTests: XCTestCase {
         }
         
         // Setup SDK with local server configuration
-        config = AdChainConfig(
+        config = AdchainConfig(
             appId: "test-app",
             appSecret: "test-secret",
             environment: .custom(baseURL: localServerURL)
         )
         
-        sdk = AdChainSDK(config: config)
+        sdk = AdchainSDK(config: config)
         
         // Reset and seed test data
         resetTestData()

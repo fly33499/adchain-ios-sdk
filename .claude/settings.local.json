@@ -27,7 +27,10 @@
       "Read(/Users/donghoon/Downloads/**)",
       "Bash(tree:*)",
       "Bash(grep:*)",
-      "Read(/Users/donghoon/Downloads/**)"
+      "Read(/Users/donghoon/Downloads/**)",
+      "Bash(gh auth:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git rm:*)"
     ],
     "deny": []
   }

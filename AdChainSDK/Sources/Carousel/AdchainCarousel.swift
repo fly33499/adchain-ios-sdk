@@ -1,6 +1,6 @@
 import UIKit
 
-public protocol AdChainCarouselProtocol {
+public protocol AdchainCarouselProtocol {
     func createCarousel(
         in container: UIView,
         config: CarouselConfig,
@@ -45,7 +45,7 @@ public struct CarouselConfig {
 
 public protocol CarouselDelegate: AnyObject {
     func carouselDidLoad(itemCount: Int)
-    func carousel(didFailToLoadWithError error: AdChainError)
+    func carousel(didFailToLoadWithError error: AdchainError)
     func carousel(didSelectItemAt position: Int, item: CarouselItem)
     func carousel(didImpressionItemAt position: Int, item: CarouselItem)
     func carouselDidRefresh()

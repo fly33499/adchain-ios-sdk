@@ -38,7 +38,7 @@ public class AdchainBenefitHub {
         // SDK 초기화 확인
         guard AdchainBenefit.shared.getInitializationStatus() else {
             Logger.shared.log("AdchainBenefit not initialized", level: .error)
-            let error = AdChainError.notInitialized(
+            let error = AdchainError.notInitialized(
                 message: "AdchainBenefit must be initialized before showing BenefitHub"
             )
             showError(error, from: viewController)
@@ -48,7 +48,7 @@ public class AdchainBenefitHub {
         // 로그인 확인
         guard AdchainBenefit.shared.isLoggedIn() else {
             Logger.shared.log("User not logged in", level: .error)
-            let error = AdChainError.invalidState(
+            let error = AdchainError.invalidState(
                 message: "User must be logged in before showing BenefitHub"
             )
             showError(error, from: viewController)

@@ -1,6 +1,6 @@
 import Foundation
 
-/// AdChainSDK - 버즈빌 SDK v6 호환 iOS SDK
+/// AdchainSDK - 버즈빌 SDK v6 호환 iOS SDK
 /// 
 /// 이 SDK는 AdchainBenefit을 통해 모든 기능에 접근합니다.
 /// 사용 예시:
@@ -17,7 +17,7 @@ import Foundation
 /// let native = AdchainNative(unitId: "UNIT_ID")
 /// native.load(onSuccess: { ad in }, onFailure: { _ in })
 /// ```
-public final class AdChainSDK {
+public final class AdchainSDK {
     public static let version = "1.0.0"
     
     /// SDK 버전 정보

@@ -1,5 +1,5 @@
 import UIKit
-import AdChainSDK
+import AdchainSDK
 
 // ✅ 올바른 초기화 순서 (Buzzville SDK v6 스타일)
 

@@ -1,6 +1,6 @@
 import UIKit
 
-internal class AdChainCarouselImpl: AdChainCarouselProtocol {
+internal class AdchainCarouselImpl: AdchainCarouselProtocol {
     private let apiClient: ApiClient
     private let deviceInfoCollector: DeviceInfoCollector
     

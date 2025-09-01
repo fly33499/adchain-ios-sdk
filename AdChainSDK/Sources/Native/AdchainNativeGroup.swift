@@ -61,12 +61,12 @@ public class AdchainNativeGroup {
         onFailure: @escaping (Error) -> Void
     ) {
         guard !isLoading else {
-            onFailure(AdChainError.loadInProgress(message: "Ads are already loading"))
+            onFailure(AdchainError.loadInProgress(message: "Ads are already loading"))
             return
         }
         
         guard count > 0 && count <= maxAdsCount else {
-            onFailure(AdChainError.invalidParameter(
+            onFailure(AdchainError.invalidParameter(
                 message: "Count must be between 1 and \(maxAdsCount)"
             ))
             return
@@ -131,13 +131,13 @@ public class AdchainNativeGroup {
         onFailure: @escaping (Error) -> Void
     ) {
         guard !isLoading else {
-            onFailure(AdChainError.loadInProgress(message: "Ads are already loading"))
+            onFailure(AdchainError.loadInProgress(message: "Ads are already loading"))
             return
         }
         
         let remainingCapacity = maxAdsCount - natives.count
         guard remainingCapacity > 0 else {
-            onFailure(AdChainError.limitExceeded(
+            onFailure(AdchainError.limitExceeded(
                 message: "Maximum ad count (\(maxAdsCount)) reached"
             ))
             return

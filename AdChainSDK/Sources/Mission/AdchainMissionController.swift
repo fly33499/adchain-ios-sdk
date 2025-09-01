@@ -49,7 +49,7 @@ public class AdchainMissionController {
         completion: @escaping (Result<AdchainMissionPack, Error>) -> Void
     ) {
         guard !isLoading else {
-            completion(.failure(AdChainError.loadInProgress(message: "Mission pack is already loading")))
+            completion(.failure(AdchainError.loadInProgress(message: "Mission pack is already loading")))
             return
         }
         
@@ -82,17 +82,17 @@ public class AdchainMissionController {
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
         guard !isExecutingMission else {
-            completion(.failure(AdChainError.operationInProgress(message: "Another mission is in progress")))
+            completion(.failure(AdchainError.operationInProgress(message: "Another mission is in progress")))
             return
         }
         
         guard let task = activeTasks.first(where: { $0.missionId == missionId }) else {
-            completion(.failure(AdChainError.notFound(message: "Mission not found: \(missionId)")))
+            completion(.failure(AdchainError.notFound(message: "Mission not found: \(missionId)")))
             return
         }
         
         guard task.status != .completed else {
-            completion(.failure(AdChainError.invalidState(message: "Mission already completed")))
+            completion(.failure(AdchainError.invalidState(message: "Mission already completed")))
             return
         }
         
@@ -126,7 +126,7 @@ public class AdchainMissionController {
                 completion(.success(()))
             } else {
                 task.status = .pending
-                completion(.failure(AdChainError.unknown(message: "Mission execution failed", underlyingError: nil)))
+                completion(.failure(AdchainError.unknown(message: "Mission execution failed", underlyingError: nil)))
             }
         }
     }

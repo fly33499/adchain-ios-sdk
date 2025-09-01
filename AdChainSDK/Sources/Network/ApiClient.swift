@@ -21,7 +21,7 @@ internal class ApiClient {
         self.session = URLSession(configuration: configuration)
     }
     
-    func validateCredentials(appId: String, appSecret: String, deviceInfo: DeviceInfo? = nil, completion: @escaping (Result<ValidateResponse, AdChainError>) -> Void) {
+    func validateCredentials(appId: String, appSecret: String, deviceInfo: DeviceInfo? = nil, completion: @escaping (Result<ValidateResponse, AdchainError>) -> Void) {
         let endpoint = "/v1/sdk/validate"
         
         // Create a proper Encodable structure
@@ -69,7 +69,7 @@ internal class ApiClient {
             device_info: deviceInfoDTO
         )
         
-        post(endpoint: endpoint, body: requestBody) { (result: Result<ValidateResponse, AdChainError>) in
+        post(endpoint: endpoint, body: requestBody) { (result: Result<ValidateResponse, AdchainError>) in
             switch result {
             case .success(let response):
                 completion(.success(response))
@@ -79,11 +79,11 @@ internal class ApiClient {
         }
     }
     
-    func fetchCarouselAds(unitId: String, count: Int, completion: @escaping (Result<[CarouselAdResponse], AdChainError>) -> Void) {
+    func fetchCarouselAds(unitId: String, count: Int, completion: @escaping (Result<[CarouselAdResponse], AdchainError>) -> Void) {
         let endpoint = "/v1/carousel/ads"
         let parameters = ["unit_id": unitId, "count": String(count)]
         
-        get(endpoint: endpoint, parameters: parameters) { (result: Result<CarouselAdsResponse, AdChainError>) in
+        get(endpoint: endpoint, parameters: parameters) { (result: Result<CarouselAdsResponse, AdchainError>) in
             switch result {
             case .success(let response):
                 completion(.success(response.ads))
@@ -96,7 +96,7 @@ internal class ApiClient {
     func trackEvent(_ event: AnalyticsEvent) {
         let endpoint = "/v1/analytics/event"
         
-        post(endpoint: endpoint, body: event) { (result: Result<EmptyResponse, AdChainError>) in
+        post(endpoint: endpoint, body: event) { (result: Result<EmptyResponse, AdchainError>) in
             if case .failure(let error) = result {
                 Logger.shared.log("Failed to track event: \(event.name), error: \(error)", level: .error)
                 EventQueue.shared.add(event)
@@ -117,7 +117,7 @@ internal class ApiClient {
     private func get<T: Decodable>(
         endpoint: String,
         parameters: [String: String] = [:],
-        completion: @escaping (Result<T, AdChainError>) -> Void
+        completion: @escaping (Result<T, AdchainError>) -> Void
     ) {
         var components = URLComponents(string: "\(config.actualBaseUrl)\(endpoint)")!
         components.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
@@ -135,7 +135,7 @@ internal class ApiClient {
     private func post<T: Decodable, U: Encodable>(
         endpoint: String,
         body: U,
-        completion: @escaping (Result<T, AdChainError>) -> Void
+        completion: @escaping (Result<T, AdchainError>) -> Void
     ) {
         guard let url = URL(string: "\(config.actualBaseUrl)\(endpoint)") else {
             completion(.failure(.invalidConfig(message: "Invalid URL")))
@@ -158,7 +158,7 @@ internal class ApiClient {
     
     private func performRequest<T: Decodable>(
         _ request: URLRequest,
-        completion: @escaping (Result<T, AdChainError>) -> Void
+        completion: @escaping (Result<T, AdchainError>) -> Void
     ) {
         let task = session.dataTask(with: request) { [weak self] data, response, error in
             if let error = error {

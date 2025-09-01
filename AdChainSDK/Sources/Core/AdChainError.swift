@@ -1,6 +1,6 @@
 import Foundation
 
-public enum AdChainError: Error {
+public enum AdchainError: Error {
     case initializationFailed(message: String)
     case notInitialized(message: String)
     case networkError(message: String, statusCode: Int?)
@@ -44,7 +44,7 @@ public enum AdChainError: Error {
         case .initializationFailed(let message):
             return "Initialization failed: \(message)"
         case .notInitialized(let message):
-            return message.isEmpty ? "AdChainSDK is not initialized" : message
+            return message.isEmpty ? "AdchainSDK is not initialized" : message
         case .networkError(let message, let statusCode):
             if let statusCode = statusCode {
                 return "Network error (\(statusCode)): \(message)"

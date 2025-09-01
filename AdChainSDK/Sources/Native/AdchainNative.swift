@@ -70,7 +70,7 @@ public class AdchainNative {
         onFailure: @escaping (Error) -> Void
     ) {
         guard !isLoading else {
-            onFailure(AdChainError.loadInProgress(message: "Ad is already loading"))
+            onFailure(AdchainError.loadInProgress(message: "Ad is already loading"))
             return
         }
         
@@ -85,7 +85,7 @@ public class AdchainNative {
             switch result {
             case .success(let ads):
                 guard let adData = ads.first else {
-                    onFailure(AdChainError.noFill(message: "No ads available"))
+                    onFailure(AdchainError.noFill(message: "No ads available"))
                     return
                 }
                 

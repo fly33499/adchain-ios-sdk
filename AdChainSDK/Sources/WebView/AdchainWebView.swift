@@ -1,6 +1,6 @@
 import UIKit
 
-public protocol AdChainWebViewProtocol {
+public protocol AdchainWebViewProtocol {
     func presentWebView(
         from viewController: UIViewController,
         config: WebViewConfig,
@@ -41,7 +41,7 @@ public struct WebViewConfig {
 public protocol WebViewDelegate: AnyObject {
     func webViewDidStartLoading(url: String)
     func webViewDidFinishLoading(url: String)
-    func webView(didFailWithError error: AdChainError)
+    func webView(didFailWithError error: AdchainError)
     func webView(shouldOverrideUrlLoading url: String) -> Bool
     func webViewDidClose()
     func webView(didReceiveMessage message: WebViewMessage)

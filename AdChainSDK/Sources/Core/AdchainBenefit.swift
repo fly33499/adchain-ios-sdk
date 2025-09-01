@@ -45,7 +45,17 @@ public class AdchainBenefit {
         self.apiClient = ApiClient(config: config)
         self.sessionManager = SessionManager()
         self.deviceInfoCollector = DeviceInfoCollector()
-        self.analytics = AdchainAnalyticsImpl()
+        
+        // Initialize analytics with dependencies
+        if let apiClient = self.apiClient,
+           let deviceInfoCollector = self.deviceInfoCollector,
+           let sessionManager = self.sessionManager {
+            self.analytics = AdchainAnalyticsImpl(
+                apiClient: apiClient,
+                deviceInfoCollector: deviceInfoCollector,
+                sessionManager: sessionManager
+            )
+        }
         
         // Validate credentials
         let deviceInfo = deviceInfoCollector?.getDeviceInfo()
@@ -80,7 +90,7 @@ public class AdchainBenefit {
         onFailure: @escaping (Error) -> Void
     ) {
         guard isInitialized else {
-            onFailure(AdChainError.notInitialized(
+            onFailure(AdchainError.notInitialized(
                 message: "AdchainBenefit not initialized. Call initialize() first."
             ))
             return
@@ -149,7 +159,7 @@ public class AdchainBenefit {
     
     internal func checkInitialized() throws {
         guard isInitialized else {
-            throw AdChainError.notInitialized(
+            throw AdchainError.notInitialized(
                 message: "AdchainBenefit is not initialized. Call initialize() first."
             )
         }

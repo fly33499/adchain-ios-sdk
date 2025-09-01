@@ -1,6 +1,6 @@
 import UIKit
 
-internal class AdChainWebViewImpl: AdChainWebViewProtocol {
+internal class AdchainWebViewImpl: AdchainWebViewProtocol {
     
     init() {
     }
@@ -20,7 +20,7 @@ internal class AdChainWebViewImpl: AdChainWebViewProtocol {
         delegate: WebViewDelegate?
     ) {
         let url = buildUrl(config: config)
-        let webViewController = AdChainWebViewController(url: url, config: config, delegate: delegate)
+        let webViewController = AdchainWebViewController(url: url, config: config, delegate: delegate)
         
         if config.showNavigationBar {
             let navigationController = UINavigationController(rootViewController: webViewController)
@@ -37,7 +37,7 @@ internal class AdChainWebViewImpl: AdChainWebViewProtocol {
         delegate: WebViewDelegate?
     ) -> UIViewController {
         let url = buildUrl(config: config)
-        return AdChainWebViewController(url: url, config: config, delegate: delegate)
+        return AdchainWebViewController(url: url, config: config, delegate: delegate)
     }
     
     private func buildUrl(config: WebViewConfig) -> String {
@@ -58,7 +58,7 @@ internal class AdChainWebViewImpl: AdChainWebViewProtocol {
             URLQueryItem(name: "user_id", value: AdchainBenefit.shared.getCurrentUser()?.userId ?? ""),
             URLQueryItem(name: "session_id", value: AdchainBenefit.shared.getSessionId()),
             URLQueryItem(name: "device_id", value: deviceInfo?.deviceId ?? ""),
-            URLQueryItem(name: "sdk_version", value: AdChainSDK.version),
+            URLQueryItem(name: "sdk_version", value: AdchainSDK.version),
             URLQueryItem(name: "platform", value: "ios")
         ])
         

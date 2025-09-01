@@ -28,7 +28,7 @@ internal class Logger {
         
         let fileName = URL(fileURLWithPath: file).lastPathComponent
         let timestamp = dateFormatter.string(from: Date())
-        let logMessage = "[\(timestamp)] [AdChainSDK] [\(level.rawValue)] [\(fileName):\(line)] \(function) - \(message)"
+        let logMessage = "[\(timestamp)] [AdchainSDK] [\(level.rawValue)] [\(fileName):\(line)] \(function) - \(message)"
         
         print(logMessage)
     }

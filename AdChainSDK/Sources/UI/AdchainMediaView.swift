@@ -208,7 +208,7 @@ public class AdchainMediaView: UIView {
     
     private func loadImage(from urlString: String) {
         guard let url = URL(string: urlString) else {
-            delegate?.mediaViewDidFailLoading(self, error: AdChainError.invalidUrl(url: urlString))
+            delegate?.mediaViewDidFailLoading(self, error: AdchainError.invalidUrl(url: urlString))
             return
         }
         
@@ -229,7 +229,7 @@ public class AdchainMediaView: UIView {
                 guard let data = data, let image = UIImage(data: data) else {
                     self.delegate?.mediaViewDidFailLoading(
                         self,
-                        error: AdChainError.invalidData(message: "Invalid image data")
+                        error: AdchainError.invalidData(message: "Invalid image data")
                     )
                     return
                 }
@@ -246,7 +246,7 @@ public class AdchainMediaView: UIView {
     
     private func loadVideo(from urlString: String) {
         guard let url = URL(string: urlString) else {
-            delegate?.mediaViewDidFailLoading(self, error: AdChainError.invalidUrl(url: urlString))
+            delegate?.mediaViewDidFailLoading(self, error: AdchainError.invalidUrl(url: urlString))
             return
         }
         
@@ -290,7 +290,7 @@ public class AdchainMediaView: UIView {
                 case .failed:
                     self.delegate?.mediaViewDidFailLoading(
                         self,
-                        error: item.error ?? AdChainError.unknown(message: "Video load failed", underlyingError: nil)
+                        error: item.error ?? AdchainError.unknown(message: "Video load failed", underlyingError: nil)
                     )
                     Logger.shared.log("Failed to load video", level: .error)
                     

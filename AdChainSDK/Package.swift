@@ -2,25 +2,25 @@
 import PackageDescription
 
 let package = Package(
-    name: "AdChainSDK",
+    name: "AdchainSDK",
     platforms: [
         .iOS(.v13)
     ],
     products: [
         .library(
-            name: "AdChainSDK",
-            targets: ["AdChainSDK"]),
+            name: "AdchainSDK",
+            targets: ["AdchainSDK"]),
     ],
     dependencies: [],
     targets: [
         .target(
-            name: "AdChainSDK",
+            name: "AdchainSDK",
             dependencies: [],
             path: "Sources"
         ),
         .testTarget(
-            name: "AdChainSDKTests",
-            dependencies: ["AdChainSDK"],
+            name: "AdchainSDKTests",
+            dependencies: ["AdchainSDK"],
             path: "Tests"
         )
     ]

@@ -1,7 +1,7 @@
 import UIKit
 import WebKit
 
-internal class AdChainWebViewController: UIViewController {
+internal class AdchainWebViewController: UIViewController {
     
     private let url: String
     private let config: WebViewConfig
@@ -76,7 +76,7 @@ internal class AdChainWebViewController: UIViewController {
         
         // User content controller for JS bridge
         let userContentController = WKUserContentController()
-        userContentController.add(self, name: "AdChain")
+        userContentController.add(self, name: "Adchain")
         configuration.userContentController = userContentController
         
         // Create WebView
@@ -120,13 +120,13 @@ internal class AdChainWebViewController: UIViewController {
         if let userAgentSuffix = config.userAgentSuffix {
             webView.evaluateJavaScript("navigator.userAgent") { [weak self] result, _ in
                 if let userAgent = result as? String {
-                    self?.webView.customUserAgent = "\(userAgent) \(userAgentSuffix) AdChainSDK/1.0.0"
+                    self?.webView.customUserAgent = "\(userAgent) \(userAgentSuffix) AdchainSDK/1.0.0"
                 }
             }
         } else {
             webView.evaluateJavaScript("navigator.userAgent") { [weak self] result, _ in
                 if let userAgent = result as? String {
-                    self?.webView.customUserAgent = "\(userAgent) AdChainSDK/1.0.0"
+                    self?.webView.customUserAgent = "\(userAgent) AdchainSDK/1.0.0"
                 }
             }
         }
@@ -186,13 +186,13 @@ internal class AdChainWebViewController: UIViewController {
         progressObservation?.invalidate()
         webView?.navigationDelegate = nil
         webView?.uiDelegate = nil
-        webView?.configuration.userContentController.removeScriptMessageHandler(forName: "AdChain")
+        webView?.configuration.userContentController.removeScriptMessageHandler(forName: "Adchain")
     }
 }
 
 // MARK: - WKNavigationDelegate
 
-extension AdChainWebViewController: WKNavigationDelegate {
+extension AdchainWebViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         delegate?.webViewDidStartLoading(url: webView.url?.absoluteString ?? "")
     }
@@ -204,7 +204,7 @@ extension AdChainWebViewController: WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         Logger.shared.log("WebView navigation failed: \(error)", level: .error)
-        let adChainError = AdChainError.webViewError(message: error.localizedDescription)
+        let adChainError = AdchainError.webViewError(message: error.localizedDescription)
         delegate?.webView(didFailWithError: adChainError)
     }
     
@@ -218,7 +218,7 @@ extension AdChainWebViewController: WKNavigationDelegate {
             Logger.shared.log("App Transport Security blocked HTTP load. Please check Info.plist settings.", level: .error)
         }
         
-        let adChainError = AdChainError.webViewError(message: "Failed to load: \(error.localizedDescription)")
+        let adChainError = AdchainError.webViewError(message: "Failed to load: \(error.localizedDescription)")
         delegate?.webView(didFailWithError: adChainError)
     }
     
@@ -260,7 +260,7 @@ extension AdChainWebViewController: WKNavigationDelegate {
 
 // MARK: - WKUIDelegate
 
-extension AdChainWebViewController: WKUIDelegate {
+extension AdchainWebViewController: WKUIDelegate {
     func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
         if navigationAction.targetFrame == nil {
             webView.load(navigationAction.request)
@@ -290,9 +290,9 @@ extension AdChainWebViewController: WKUIDelegate {
 
 // MARK: - WKScriptMessageHandler
 
-extension AdChainWebViewController: WKScriptMessageHandler {
+extension AdchainWebViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        guard message.name == "AdChain" else { return }
+        guard message.name == "Adchain" else { return }
         
         if let body = message.body as? [String: Any] {
             let type = body["type"] as? String ?? "unknown"
@@ -394,7 +394,7 @@ extension AdChainWebViewController: WKScriptMessageHandler {
         )
         
         // Create new WebView controller
-        let newWebViewController = AdChainWebViewController(
+        let newWebViewController = AdchainWebViewController(
             url: urlString,
             config: config,
             delegate: nil
@@ -447,7 +447,7 @@ extension AdChainWebViewController: WKScriptMessageHandler {
         )
         
         // Create new WebView controller
-        let newWebViewController = AdChainWebViewController(
+        let newWebViewController = AdchainWebViewController(
             url: urlString,
             config: config,
             delegate: self.delegate

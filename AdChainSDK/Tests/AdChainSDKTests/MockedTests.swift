@@ -1,5 +1,5 @@
 import XCTest
-@testable import AdChainSDK
+@testable import AdchainSDK
 
 final class MockedTests: XCTestCase {
     
